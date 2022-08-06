@@ -1,8 +1,8 @@
 const express = require('express')
-require('../src/DB/DB')
+require('./src/DB/DB')
 //const swaggerUI = require("swagger-ui-express");
 //const swaggerJsDoc = require("swagger-jsdoc");
-const user_router = require('../src/routers/user-router')
+const user_router = require('./src/routers/user-router')
 //const post_router = require('../src/routers/post-router')
 //const item_router = require('../src/routers/item-router')
 /**const options = {

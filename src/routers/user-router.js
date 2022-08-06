@@ -1,6 +1,42 @@
 const express = require ('express')
 const User = require('../models/user')
 const router = new express.Router()
+
+/**
+ * @swagger
+ * /customers:
+ *  get:
+ *    description: Use to request all customers
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ */
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    user:
+ *      type:object
+ *      required:
+ *       -   name
+ *       -  email
+ *       - password
+ *       - type
+ *      properties:
+ *          name :
+ *              type : string
+ *              description : name of the account
+ *          email :
+ *              type : string
+ *              description : email of the user
+ *          password :
+ *              type : string
+ *              description : min length 7
+ *          type :
+ *              type : string
+ *               description : store or normel user
+ *  
+ */
 /**
  * @swagger
  * components:

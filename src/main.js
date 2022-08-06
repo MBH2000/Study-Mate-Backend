@@ -7,7 +7,7 @@ const user_router = require('../src/routers/user-router')
 //const item_router = require('../src/routers/item-router')
 const options = {
 	definition: {
-		openapi: "3.0.0",
+		openapi: "3.0.n",
 		info: {
 			title: "Library API",
 			version: "1.0.0",

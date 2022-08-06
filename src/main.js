@@ -1,11 +1,11 @@
 const express = require('express')
 require('../src/DB/DB')
-const swaggerUI = require("swagger-ui-express");
-const swaggerJsDoc = require("swagger-jsdoc");
+//const swaggerUI = require("swagger-ui-express");
+//const swaggerJsDoc = require("swagger-jsdoc");
 const user_router = require('../src/routers/user-router')
 //const post_router = require('../src/routers/post-router')
 //const item_router = require('../src/routers/item-router')
-const options = {
+/**const options = {
 	definition: {
 		openapi: "3.0.0",
 		info: {
@@ -20,11 +20,11 @@ const options = {
 		],
 	},
 	apis: ["./routes/*.js"],
-};
-const specs = swaggerJsDoc(options);
+};*/
+//const specs = swaggerJsDoc(options);
 const app = express()
 const port = process.env.PORT || 3000
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
+//app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 app.use(express.json())
 app.use(user_router)
 //app.use(post_router)

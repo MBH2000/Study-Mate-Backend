@@ -1,33 +1,6 @@
 const express = require ('express')
 const User = require('../models/user')
 const router = new express.Router()
-
-/**
- * @swagger
- * components:
- *  schemas:
- *    user:
- *      type:object
- *      required:
- *       -   name
- *       -  email
- *       - password
- *       - type
- *      properties:
- *          name :
- *              type : string
- *              description : name of the account
- *          email :
- *              type : string
- *              description : email of the user
- *          password :
- *              type : string
- *              description : min length 7
- *          type :
- *              type : string
- *               description : store or normel user
- *  
- */
 /**
  * @swagger
  * components:
@@ -51,6 +24,30 @@ const router = new express.Router()
  *         id: d5fE_asz
  *         title: The New Turing Omnibus
  *         author: Alexander K. Dewdney
+ */
+
+ /**
+  * @swagger
+  * tags:
+  *   name: Books
+  *   description: The books managing API
+  */
+
+/**
+ * @swagger
+ * /books:
+ *   get:
+ *     summary: Returns the list of all the books
+ *     tags: [Books]
+ *     responses:
+ *       200:
+ *         description: The list of the books
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Book'
  */
 
 //registr router

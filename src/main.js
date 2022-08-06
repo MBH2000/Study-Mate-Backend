@@ -19,7 +19,7 @@ const options ={
             }
         ],
     },
-        apis :["./routers/user-router.js"]    
+        apis :["./routers/*.js"]    
 }
 const specs = swaggerjsdoc(options)
 const app = express()

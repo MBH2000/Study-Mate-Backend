@@ -1,90 +1,7 @@
 const express = require ('express')
 const User = require('../models/user')
 const router = new express.Router()
-
-/**
- * @swagger
- * /customers:
- *  get:
- *    description: Use to request all customers
- *    responses:
- *      '200':
- *        description: A successful response
- */
-/**
- * @swagger
- * components:
- *  schemas:
- *    user:
- *      type:object
- *      required:
- *       -   name
- *       -  email
- *       - password
- *       - type
- *      properties:
- *          name :
- *              type : string
- *              description : name of the account
- *          email :
- *              type : string
- *              description : email of the user
- *          password :
- *              type : string
- *              description : min length 7
- *          type :
- *              type : string
- *               description : store or normel user
- *  
- */
-/**
- * @swagger
- * components:
- *   schemas:
- *     Book:
- *       type: object
- *       required:
- *         - title
- *         - author
- *       properties:
- *         id:
- *           type: string
- *           description: The auto-generated id of the book
- *         title:
- *           type: string
- *           description: The book title
- *         author:
- *           type: string
- *           description: The book author
- *       example:
- *         id: d5fE_asz
- *         title: The New Turing Omnibus
- *         author: Alexander K. Dewdney
- */
-
- /**
-  * @swagger
-  * tags:
-  *   name: Books
-  *   description: The books managing API
-  */
-
-/**
- * @swagger
- * /books:
- *   get:
- *     summary: Returns the list of all the books
- *     tags: [Books]
- *     responses:
- *       200:
- *         description: The list of the books
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Book'
- */
+const auth = require('../middleware/auth')
 
 //registr router
 router.post('/user/register',async (req,res)=>{
@@ -108,16 +25,42 @@ router.post('/user/login',async (req,res)=>{
     }
 })
 //logout router
-router.post('/user/logout',async (req,res)=>{
+router.post('/user/logout',auth,async (req,res)=>{
     try {
-        const user = await User.findOneAndUpdate({email: req.body.email},{token : ""})
-        await user.save()
+        req.user.token = req.user.token !== req.token
+        await req.user.save()
 
         res.send()
     } catch (e) {
         res.status(500).send(e)
     }
 })
-//update user router
-//get user info router 
+router.patch('/user/update',auth, async (req,res)=>{
+    const update = Object.keys(req.body)
+    const allowd = ['name','emai','password']
+    const isVal = update.every((update)=> allowd.includes(update))
+
+    if(!isVal){
+        return res.status(400).send({error:'invalid'})
+    }
+
+    try {
+        update.forEach((update)=>req.user[update]=req.body[update])
+        await req.user.save()
+        res.send(req.user)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+router.delete('/user/delete',auth,async(req,res)=>{
+    try {
+        await req.user.remove()
+        res.send(req.user)
+    } catch (e) {
+        res.status(500).send(e)
+    }
+})
+router.get('/user/me',auth, async(req,res)=>{
+    res.send(req.user)
+})
 module.exports = router

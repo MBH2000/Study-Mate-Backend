@@ -3,8 +3,6 @@ const validator =require('validator')
 const bcryptjs =require('bcryptjs')
 const jwt =require('jsonwebtoken')
 const { Timestamp } = require('mongodb')
-const Post = require('./post')
-const Product = require('./product')
 
 //pleas connect the post model here  for authentication
 
@@ -38,22 +36,12 @@ const UserSchema = new mongoose.Schema({
     },
     type : {
         type : String ,
-        required : true 
+        required : false 
     },
     avatar:{
         type:Buffer
     }
 },{Timestamp : true})
-UserSchema.virtual('Post',{
-    ref : 'Post',
-    localField :'_id',
-    foreignField:'owner'
-})
-UserSchema.virtual('Product',{
-    ref : 'Product',
-    localField :'_id',
-    foreignField:'owner'
-})
 UserSchema.methods.tokenm = async function(){
     const user = this
     const token = jwt.sign({_id:user._id.toString()},'tokensecretxo')

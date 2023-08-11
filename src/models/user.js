@@ -2,7 +2,8 @@ const mongoose = require('mongoose')
 const validator =require('validator')
 const bcryptjs =require('bcryptjs')
 const jwt =require('jsonwebtoken')
-const { Timestamp } = require('mongodb')
+const courses = require('./courses')
+const { Timestamp, Int32 } = require('mongodb')
 
 //pleas connect the post model here  for authentication
 
@@ -36,12 +37,23 @@ const UserSchema = new mongoose.Schema({
     },
     type : {
         type : String ,
-        required : false 
+        required : true 
     },
     avatar:{
         type:Buffer
+    },
+    number:{
+        type: Number
+    },
+    about:{
+        type: String
     }
 },{Timestamp : true})
+UserSchema.virtual('courses',{
+    ref : 'courses',
+    localField :'_id',
+    foreignField:'owner'
+})
 UserSchema.methods.tokenm = async function(){
     const user = this
     const token = jwt.sign({_id:user._id.toString()},'tokensecretxo')
@@ -81,8 +93,6 @@ UserSchema.methods.toJSON =  function () {
 }
 UserSchema.pre('remove',async function (next){
     const user = this 
-    await Post.deleteMany({owner: user.id})
-    await Product.deleteMany({owner: user.id})
     next()
 })
 const User = mongoose.model('Users',UserSchema)

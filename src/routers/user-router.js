@@ -1,7 +1,9 @@
 const express = require ('express')
 const User = require('../models/user')
+const multer = require('multer')
 const router = new express.Router()
 const auth = require('../middleware/auth')
+const sharp = require('sharp')
 
 //registr router
 router.post('/user/register',async (req,res)=>{
@@ -37,7 +39,7 @@ router.post('/user/logout',auth,async (req,res)=>{
 })
 router.patch('/user/update',auth, async (req,res)=>{
     const update = Object.keys(req.body)
-    const allowd = ['name','emai','password']
+    const allowd = ['name','email','password' ,'number','about']
     const isVal = update.every((update)=> allowd.includes(update))
 
     if(!isVal){
@@ -62,5 +64,26 @@ router.delete('/user/delete',auth,async(req,res)=>{
 })
 router.get('/user/me',auth, async(req,res)=>{
     res.send(req.user)
+})
+
+const upload = multer({
+    limits: {
+        fieldSize: 100000 * 1024 * 1024
+    },
+    fileFilter(req, file, cb) {
+        if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            cb(new Error('File must be jpg or jpeg or png'))
+        }
+        
+        cb(undefined, true)
+    }
+})
+router.post('/user/avatar', auth, upload.single('avatar'), async (req, res) => {
+    const buffer = await sharp(req.file.buffer).resize({ width: 500, height: 500 }).png().toBuffer()
+    req.user.avatar = buffer
+    await req.user.save()
+    res.send()
+}, (error, req, res, next) => {
+    res.status(400).send({ error: error.message })
 })
 module.exports = router

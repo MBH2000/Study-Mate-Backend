@@ -5,11 +5,10 @@ const jwt =require('jsonwebtoken')
 const courses = require('./courses')
 const { Timestamp, Int32 } = require('mongodb')
 
-//pleas connect the post model here  for authentication
-
 const UserSchema = new mongoose.Schema({
     name : {
         type:String,
+        unique:true,
         required : true,
         trim : true
     },
@@ -33,7 +32,6 @@ const UserSchema = new mongoose.Schema({
     },
     token : {
         type: String
-        //not a list of token because we will not allow multi session 
     },
     type : {
         type : String ,
@@ -45,13 +43,22 @@ const UserSchema = new mongoose.Schema({
     number:{
         type: Number
     },
+    id:{
+        type:Number,
+        unique:true
+    },
     about:{
         type: String
-    }
+    },
+    enrolled:[{
+        courses:{
+            type: String
+        }
+    }]
 },{Timestamp : true})
 UserSchema.virtual('courses',{
     ref : 'courses',
-    localField :'_id',
+    localField :'name',
     foreignField:'owner'
 })
 UserSchema.methods.tokenm = async function(){
@@ -67,6 +74,13 @@ UserSchema.pre('save', async function (next) {
     if (user.isModified('password')) {
         user.password = await bcryptjs.hash(user.password , 8)
     }
+    
+    let randomNumber = Math.floor(100000000 + Math.random() * 900000000);
+    while (randomNumber % 10 === 0)
+    { 
+        randomNumber = Math.floor(100000000 + Math.random() * 900000000);
+    }
+    user.id = randomNumber
 
     next()
 })
@@ -95,6 +109,6 @@ UserSchema.pre('remove',async function (next){
     const user = this 
     next()
 })
-const User = mongoose.model('Users',UserSchema)
 
+const User = mongoose.model('Users',UserSchema)
 module.exports =User

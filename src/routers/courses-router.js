@@ -10,7 +10,7 @@ const router = new express.Router()
 router.post('/course',auth, async (req, res) => {
     const course = new Course({
         ...req.body,
-        owner: req.user._id
+        owner: req.user.name
     })
 
     try {
@@ -20,13 +20,23 @@ router.post('/course',auth, async (req, res) => {
         res.status(400).send(e)
     }
 })
-router.get('/course', auth, async (req, res) => {
-    res.send(req.course)
+
+
+router.get('/course', async (req, res) => {
+    const limit = req.query.limit
+    const page =req.query.page
+    try {
+        const courses = await Course.find().limit(limit).skip(limit * page );
+        return res.status(200).send({ courses });
+
+    } catch (e) {
+        return res.status(500).send({ Error: e })
+    }
 })
 
 
-//Get product by id
-router.get('/course/:id', auth, async (req, res) => {
+//Get course by id
+router.get('/course/:id', async (req, res) => {
     const _id = req.params.id
     
     try {

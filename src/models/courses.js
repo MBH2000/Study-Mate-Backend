@@ -9,20 +9,20 @@ const productSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
-	price: {
+	totalTime: {
 		type: String,
-		required: true,
+		required: true
 	},
 	rating: {
 		type: Number,
 		min: 0,
-		max: 10
+		max: 5
 	},
 	avatar: {
         type: Buffer
     },
 	owner:{
-		type: mongoose.Schema.Types.ObjectId,
+		type: mongoose.Schema.Types.String,
 		required: true,
 		ref: 'User'
 	}

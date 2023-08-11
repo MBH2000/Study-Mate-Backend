@@ -47,7 +47,7 @@ const UserSchema = new mongoose.Schema({
         type:Number,
         unique:true
     },
-    about:{
+    bio:{
         type: String
     },
     enrolled:[{
